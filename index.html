@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NJ Permit Prep — Pass Your New Jersey Knowledge Test</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <canvas id="confetti-canvas"></canvas>
+
+  <header id="topbar">
+    <div class="logo">🚗 <span>Permit<span class="grad-text">Prep</span></span></div>
+    <div class="topbar-right">
+      <select id="state-select" title="Choose your state"></select>
+      <div class="points-pill" id="points-pill">⭐ <span id="points-value">0</span> pts</div>
+    </div>
+  </header>
+
+  <nav id="main-nav">
+    <button data-view="home">🏠 Home</button>
+    <button data-view="study">📚 Study</button>
+    <button data-view="exam">📝 Exam</button>
+    <button data-view="signs">🛑 Signs</button>
+    <button data-view="rewards">🎁 Rewards</button>
+    <button data-view="progress">📈 Progress</button>
+    <button id="tour-btn">✨ Tour</button>
+  </nav>
+
+  <main id="app">
+    <section id="view-home" class="view"></section>
+    <section id="view-study" class="view"></section>
+    <section id="view-quiz" class="view"></section>
+    <section id="view-exam" class="view"></section>
+    <section id="view-flashcards" class="view"></section>
+    <section id="view-signs" class="view"></section>
+    <section id="view-rewards" class="view"></section>
+    <section id="view-progress" class="view"></section>
+  </main>
+
+  <div id="mascot"></div>
+
+  <div id="tour-overlay" class="hidden">
+    <div id="tour-spotlight"></div>
+    <div id="tour-panel"></div>
+  </div>
+
+  <!-- data -->
+  <script src="data/signs.js"></script>
+  <script src="data/questions-signs.js"></script>
+  <script src="data/questions-laws.js"></script>
+  <script src="data/questions-speed.js"></script>
+  <script src="data/questions-alcohol.js"></script>
+  <script src="data/questions-safe.js"></script>
+  <script src="data/questions-sharing.js"></script>
+  <script src="data/questions-license.js"></script>
+  <script src="data/questions-emergency.js"></script>
+
+  <!-- app -->
+  <script src="js/storage.js"></script>
+  <script src="js/confetti.js"></script>
+  <script src="js/mascot.js"></script>
+  <script src="js/quiz.js"></script>
+  <script src="js/exam.js"></script>
+  <script src="js/flashcards.js"></script>
+  <script src="js/rewards.js"></script>
+  <script src="js/progress.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

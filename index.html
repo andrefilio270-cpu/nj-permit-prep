@@ -13,6 +13,7 @@
   <header id="topbar">
     <div class="logo">🚗 <span>Permit<span class="grad-text">Prep</span></span></div>
     <div class="topbar-right">
+      <button id="lang-btn" class="lang-btn" title="PT / EN"></button>
       <select id="state-select" title="Choose your state"></select>
       <div class="points-pill" id="points-pill">⭐ <span id="points-value">0</span> pts</div>
     </div>
@@ -41,6 +42,16 @@
 
   <div id="mascot"></div>
 
+  <button id="chat-fab" title="Ask Bubbles">💬</button>
+  <div id="chat-panel" class="hidden">
+    <div class="chat-head"><span id="chat-title"></span><button id="chat-close">✕</button></div>
+    <div id="chat-msgs"></div>
+    <div class="chat-input-row">
+      <input id="chat-input" type="text" maxlength="200">
+      <button id="chat-send" class="btn primary"></button>
+    </div>
+  </div>
+
   <div id="tour-overlay" class="hidden">
     <div id="tour-spotlight"></div>
     <div id="tour-panel"></div>
@@ -59,6 +70,7 @@
 
   <!-- app -->
   <script src="js/storage.js"></script>
+  <script src="js/i18n.js"></script>
   <script src="js/confetti.js"></script>
   <script src="js/mascot.js"></script>
   <script src="js/quiz.js"></script>
@@ -66,6 +78,7 @@
   <script src="js/flashcards.js"></script>
   <script src="js/rewards.js"></script>
   <script src="js/progress.js"></script>
+  <script src="js/chat.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

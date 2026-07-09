@@ -1,5 +1,5 @@
-// js/progress.js — Progress page (R9.3): overall stats, accuracy per topic,
-// exam history, current/best streak, and double-confirm progress reset (R9.5).
+// js/progress.js — Progress page (R9.3): overall stats, accuracy per topic, exam history,
+// streaks, and double-confirm reset (R9.5). Bilingual via I18N (R11.2).
 // Loaded by index.html; used via the global Progress.
 
 const Progress = {
@@ -19,46 +19,49 @@ const Progress = {
       const qCount = Store.questionsByTopic(t.id).length;
       const tSeen = Store.questionsByTopic(t.id).filter(q => s.answered[q.id]).length;
       return '<div class="topic-row">' +
-        '<span class="topic-row-name">' + t.icon + ' ' + esc(t.name) + (s.mastery[t.id] ? ' <span class="mastered">★ mastered</span>' : '') + '</span>' +
+        '<span class="topic-row-name">' + t.icon + ' ' + esc(I18N.topicName(t)) + (s.mastery[t.id] ? ' <span class="mastered">' + I18N.t('mastered') + '</span>' : '') + '</span>' +
         '<div class="topic-row-bars">' +
         '<div class="bar mini"><div class="bar-fill" style="width:' + tAcc + '%"></div></div>' +
-        '<span class="topic-row-stats">' + (answered ? tAcc + '% accuracy' : 'not started') + ' · ' + tSeen + '/' + qCount + ' seen</span>' +
+        '<span class="topic-row-stats">' + (answered ? I18N.t('acc_label', { p: tAcc }) : I18N.t('not_started')) + ' · ' + I18N.t('seen_label', { s: tSeen, n: qCount }) + '</span>' +
         '</div></div>';
     }).join('');
 
     const hist = s.examHistory.slice().reverse();
     const histRows = hist.length
-      ? '<table class="exam-table"><tr><th>Date</th><th>Score</th><th>Result</th></tr>' +
+      ? '<table class="exam-table"><tr><th>' + I18N.t('th_date') + '</th><th>' + I18N.t('th_score') + '</th><th>' + I18N.t('th_result') + '</th></tr>' +
         hist.map(h => '<tr><td>' + esc(h.date) + '</td><td>' + h.score + '/' + h.total + '</td>' +
-          '<td class="' + (h.passed ? 'pass' : 'fail') + '">' + (h.passed ? 'PASSED ✅' : 'failed') + '</td></tr>').join('') +
+          '<td class="' + (h.passed ? 'pass' : 'fail') + '">' + (h.passed ? I18N.t('passed_label') : I18N.t('hist_failed')) + '</td></tr>').join('') +
         '</table>'
-      : '<p class="empty-note">No exam simulations yet — take one from the Exam tab!</p>';
+      : '<p class="empty-note">' + I18N.t('no_exams') + '</p>';
 
     host.innerHTML =
-      '<div class="pop-in"><h1>Your Progress 📈</h1>' +
+      '<div class="pop-in"><h1>' + I18N.t('progress_title') + '</h1>' +
       '<div class="stats-grid">' +
-      '<div class="card stat"><b>' + s.points + '</b><span>total points</span></div>' +
-      '<div class="card stat"><b>' + totals.answered + '</b><span>answers given</span></div>' +
-      '<div class="card stat"><b>' + acc + '%</b><span>overall accuracy</span></div>' +
-      '<div class="card stat"><b>' + coverage + '%</b><span>of the ' + bankSize + '-question bank seen</span></div>' +
-      '<div class="card stat"><b>' + s.streak + '</b><span>current streak 🔥</span></div>' +
-      '<div class="card stat"><b>' + s.bestStreak + '</b><span>best streak 🏅</span></div>' +
+      '<div class="card stat"><b>' + s.points + '</b><span>' + I18N.t('stat_points') + '</span></div>' +
+      '<div class="card stat"><b>' + totals.answered + '</b><span>' + I18N.t('stat_answers') + '</span></div>' +
+      '<div class="card stat"><b>' + acc + '%</b><span>' + I18N.t('stat_accuracy') + '</span></div>' +
+      '<div class="card stat"><b>' + coverage + '%</b><span>' + I18N.t('stat_coverage', { n: bankSize }) + '</span></div>' +
+      '<div class="card stat"><b>' + s.streak + '</b><span>' + I18N.t('stat_streak') + '</span></div>' +
+      '<div class="card stat"><b>' + s.bestStreak + '</b><span>' + I18N.t('stat_best') + '</span></div>' +
       '</div>' +
-      '<div class="card"><h3>Accuracy by topic</h3>' + topicRows + '</div>' +
-      '<div class="card"><h3>Exam history</h3>' + histRows + '</div>' +
-      '<div class="card danger-zone"><h3>Reset</h3>' +
-      '<p>Erases all points, stats, rewards and history. This cannot be undone.</p>' +
-      '<button class="btn danger" onclick="Progress.reset()">Reset all progress</button></div>' +
+      '<div class="card"><h3>' + I18N.t('acc_by_topic') + '</h3>' + topicRows + '</div>' +
+      '<div class="card"><h3>' + I18N.t('exam_history') + '</h3>' + histRows + '</div>' +
+      '<div class="card danger-zone"><h3>' + I18N.t('reset_title') + '</h3>' +
+      '<p>' + I18N.t('reset_text') + '</p>' +
+      '<button class="btn danger" onclick="Progress.reset()">' + I18N.t('reset_btn') + '</button></div>' +
       '</div>';
   },
 
   // R9.5 — double confirmation
   reset() {
-    if (!confirm('Reset ALL progress? Points, stats, rewards and exam history will be erased.')) return;
-    if (!confirm('Are you REALLY sure? There is no undo.')) return;
+    if (!confirm(I18N.t('reset_c1'))) return;
+    if (!confirm(I18N.t('reset_c2'))) return;
+    const lang = Store.state.lang;      // keep the language choice across resets
     Store.reset();
+    Store.state.lang = lang;
+    Store.save();
     App.refreshPointsPill();
     this.render();
-    Mascot.say('Fresh start! Sometimes that\'s exactly what we need. Let\'s go! 💜', 3600);
+    Mascot.say(I18N.t('reset_done'), 3600);
   }
 };

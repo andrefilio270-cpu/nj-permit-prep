@@ -1,5 +1,5 @@
 // js/app.js — SPA router (R9.1), dashboard (R9.2), study hub (R5), state selector (R9.4),
-// animated points pill (R6.4) and boot sequence (first-visit tour, R8.2).
+// animated points pill (R6.4), language toggle (R11.1) and boot sequence.
 // Loaded last by index.html; used via the global App.
 
 const App = {
@@ -15,15 +15,19 @@ const App = {
     Store.load();
     Confetti.init();
     Mascot.init();
+    Chat.init();
 
-    // R9.4 — state selector: only New Jersey enabled, the rest "coming soon"
+    // R9.4 — state selector: only New Jersey enabled
     const sel = document.getElementById('state-select');
-    sel.innerHTML = this.STATES.map(s =>
-      '<option value="' + s + '"' + (s === 'New Jersey' ? ' selected' : ' disabled') + '>' +
-      s + (s === 'New Jersey' ? '' : ' — soon') + '</option>').join('');
     sel.addEventListener('change', () => { sel.value = 'New Jersey'; });
     sel.addEventListener('click', () => {
-      if (!Tour.active) Mascot.say('Only New Jersey is ready for now — more states coming soon! 🗺', 3000);
+      if (!Tour.active) Mascot.say(I18N.t('only_nj'), 3000);
+    });
+
+    // R11.1 — language toggle
+    document.getElementById('lang-btn').addEventListener('click', () => {
+      I18N.set(I18N.lang === 'pt' ? 'en' : 'pt');
+      this.applyLang();
     });
 
     // nav
@@ -32,14 +36,35 @@ const App = {
     document.getElementById('tour-btn').addEventListener('click', () => Tour.start());
 
     this.refreshPointsPill();
-    this.show('home');
+    this.applyLang();   // translates chrome + renders the current (home) view
 
     // R8.2 — guided tour on first visit
     if (!Store.state.tourSeen) {
       setTimeout(() => Tour.start(), 900);
     } else {
-      setTimeout(() => Mascot.say('Welcome back! Ready to study? 💜', 3200), 700);
+      setTimeout(() => Mascot.say(I18N.t('welcome_back'), 3200), 700);
     }
+  },
+
+  // R11.1/R11.2 — apply the active language to all static chrome and re-render
+  applyLang() {
+    const views = ['home', 'study', 'exam', 'signs', 'rewards', 'progress'];
+    document.querySelectorAll('#main-nav [data-view]').forEach(b =>
+      b.textContent = I18N.t('nav_' + b.getAttribute('data-view')));
+    document.getElementById('tour-btn').textContent = I18N.t('nav_tour');
+    document.getElementById('lang-btn').textContent = I18N.lang === 'pt' ? '🇧🇷 PT' : '🇺🇸 EN';
+
+    const sel = document.getElementById('state-select');
+    sel.innerHTML = this.STATES.map(s =>
+      '<option value="' + s + '"' + (s === 'New Jersey' ? ' selected' : ' disabled') + '>' +
+      s + (s === 'New Jersey' ? '' : I18N.t('soon')) + '</option>').join('');
+
+    Chat.applyLang();
+    if (Tour.active) Tour.show();
+    // re-render the current view in the new language (quiz/exam sessions keep their state
+    // and switch language on the next question render)
+    if (views.indexOf(this.current) >= 0) this.show(this.current);
+    else if (this.current === 'flashcards') this.show('flashcards');
   },
 
   show(view) {
@@ -52,7 +77,7 @@ const App = {
 
     if (view === 'home') this.renderHome();
     else if (view === 'study') this.renderStudy();
-    else if (view === 'exam') Exam.renderIntro();
+    else if (view === 'exam') { if (!Exam.session || Exam.session.done) Exam.renderIntro(); else Exam.render(); }
     else if (view === 'signs') this.renderSigns();
     else if (view === 'rewards') Rewards.render();
     else if (view === 'progress') Progress.render();
@@ -96,37 +121,36 @@ const App = {
     const acc = Store.accuracy();
     const mistakes = s.mistakes.length;
 
-    // next reward closest to unlocking (R9.2)
     const pending = s.rewards.filter(r => !r.claimed && s.points < r.cost)
       .sort((a, b) => (a.cost - s.points) - (b.cost - s.points))[0];
     const unlocked = s.rewards.filter(r => !r.claimed && s.points >= r.cost)[0];
 
     host.innerHTML =
       '<div class="hero pop-in">' +
-      '<h1>Let\'s get that <span class="grad-text">license</span>! 🚗</h1>' +
-      '<p class="sub">Your New Jersey Knowledge Test prep — study, earn points, win your own rewards.</p>' +
+      '<h1>' + I18N.t('home_title') + '</h1>' +
+      '<p class="sub">' + I18N.t('home_sub') + '</p>' +
       '<div class="hero-stats">' +
-      '<div class="hero-stat"><b>' + s.points + '</b><span>points ⭐</span></div>' +
-      '<div class="hero-stat"><b>' + acc + '%</b><span>accuracy</span></div>' +
-      '<div class="hero-stat"><b>' + s.bestStreak + '</b><span>best streak 🔥</span></div>' +
+      '<div class="hero-stat"><b>' + s.points + '</b><span>' + I18N.t('home_points') + '</span></div>' +
+      '<div class="hero-stat"><b>' + acc + '%</b><span>' + I18N.t('home_accuracy') + '</span></div>' +
+      '<div class="hero-stat"><b>' + s.bestStreak + '</b><span>' + I18N.t('home_beststreak') + '</span></div>' +
       '</div>' +
-      '<div class="coverage"><span>Question bank explored: ' + seen + '/' + bankSize + '</span>' +
+      '<div class="coverage"><span>' + I18N.t('home_explored', { seen: seen, n: bankSize }) + '</span>' +
       '<div class="bar"><div class="bar-fill" style="width:' + coverage + '%"></div></div></div>' +
       '</div>' +
 
       (unlocked
-        ? '<div class="card reward-banner pop-in" onclick="App.show(\'rewards\')">🎉 <b>"' + esc(unlocked.title) + '"</b> is unlocked — go claim it!</div>'
+        ? '<div class="card reward-banner pop-in" onclick="App.show(\'rewards\')">' + I18N.t('banner_unlocked', { title: esc(unlocked.title) }) + '</div>'
         : pending
-          ? '<div class="card reward-banner pop-in" onclick="App.show(\'rewards\')">🎁 Next reward: <b>"' + esc(pending.title) + '"</b> — only <b>' + (pending.cost - s.points) + ' pts</b> to go!</div>'
-          : '<div class="card reward-banner pop-in" onclick="App.show(\'rewards\')">🎁 Create your first <b>reward</b> — decide what you\'ll win with your points!</div>') +
+          ? '<div class="card reward-banner pop-in" onclick="App.show(\'rewards\')">' + I18N.t('banner_next', { title: esc(pending.title), pts: pending.cost - s.points }) + '</div>'
+          : '<div class="card reward-banner pop-in" onclick="App.show(\'rewards\')">' + I18N.t('banner_create') + '</div>') +
 
       '<div class="grid modes-grid">' +
-      '<button class="card mode-card pop-in" onclick="App.show(\'study\')"><span class="mode-icon">📚</span><b>Practice by Topic</b><span>Instant feedback + explanations</span></button>' +
-      '<button class="card mode-card pop-in" onclick="Quiz.start(\'quick\')"><span class="mode-icon">⚡</span><b>Quick Quiz</b><span>10 random questions, fast</span></button>' +
-      '<button class="card mode-card pop-in" onclick="App.show(\'exam\')"><span class="mode-icon">📝</span><b>Exam Simulation</b><span>50 questions — the real deal</span></button>' +
-      '<button class="card mode-card pop-in" onclick="App.show(\'flashcards\')"><span class="mode-icon">🃏</span><b>Flashcards</b><span>Flip &amp; memorize</span></button>' +
-      '<button class="card mode-card pop-in" onclick="Quiz.start(\'mistakes\')"><span class="mode-icon">🔁</span><b>Mistake Review</b><span>' + (mistakes ? mistakes + ' to fix — beat them!' : 'Nothing to fix — nice!') + '</span></button>' +
-      '<button class="card mode-card pop-in" onclick="App.show(\'signs\')"><span class="mode-icon">🛑</span><b>Road Signs</b><span>Visual gallery by category</span></button>' +
+      '<button class="card mode-card pop-in" onclick="App.show(\'study\')"><span class="mode-icon">📚</span><b>' + I18N.t('mode_practice') + '</b><span>' + I18N.t('mode_practice_sub') + '</span></button>' +
+      '<button class="card mode-card pop-in" onclick="Quiz.start(\'quick\')"><span class="mode-icon">⚡</span><b>' + I18N.t('mode_quick') + '</b><span>' + I18N.t('mode_quick_sub') + '</span></button>' +
+      '<button class="card mode-card pop-in" onclick="App.show(\'exam\')"><span class="mode-icon">📝</span><b>' + I18N.t('mode_exam') + '</b><span>' + I18N.t('mode_exam_sub') + '</span></button>' +
+      '<button class="card mode-card pop-in" onclick="App.show(\'flashcards\')"><span class="mode-icon">🃏</span><b>' + I18N.t('mode_flash') + '</b><span>' + I18N.t('mode_flash_sub') + '</span></button>' +
+      '<button class="card mode-card pop-in" onclick="Quiz.start(\'mistakes\')"><span class="mode-icon">🔁</span><b>' + I18N.t('mode_mistakes') + '</b><span>' + (mistakes ? I18N.t('mistakes_some', { n: mistakes }) : I18N.t('mistakes_none')) + '</span></button>' +
+      '<button class="card mode-card pop-in" onclick="App.show(\'signs\')"><span class="mode-icon">🛑</span><b>' + I18N.t('mode_signs') + '</b><span>' + I18N.t('mode_signs_sub') + '</span></button>' +
       '</div>';
   },
 
@@ -135,14 +159,14 @@ const App = {
     const host = document.getElementById('view-study');
     const mistakes = Store.state.mistakes.length;
     host.innerHTML =
-      '<div class="pop-in"><h1>Study Modes 📚</h1>' +
+      '<div class="pop-in"><h1>' + I18N.t('study_title') + '</h1>' +
       '<div class="grid modes-grid">' +
-      '<button class="card mode-card" onclick="Quiz.start(\'quick\')"><span class="mode-icon">⚡</span><b>Quick Quiz</b><span>10 random questions</span></button>' +
-      '<button class="card mode-card" onclick="App.show(\'flashcards\')"><span class="mode-icon">🃏</span><b>Flashcards</b><span>Flip &amp; memorize</span></button>' +
-      '<button class="card mode-card" onclick="Quiz.start(\'mistakes\')"><span class="mode-icon">🔁</span><b>Mistake Review</b><span>' + (mistakes ? mistakes + ' waiting for revenge' : 'Empty — great job!') + '</span></button>' +
-      '<button class="card mode-card" onclick="App.show(\'exam\')"><span class="mode-icon">📝</span><b>Exam Simulation</b><span>The full 50-question test</span></button>' +
+      '<button class="card mode-card" onclick="Quiz.start(\'quick\')"><span class="mode-icon">⚡</span><b>' + I18N.t('mode_quick') + '</b><span>' + I18N.t('mode_quick_sub') + '</span></button>' +
+      '<button class="card mode-card" onclick="App.show(\'flashcards\')"><span class="mode-icon">🃏</span><b>' + I18N.t('mode_flash') + '</b><span>' + I18N.t('mode_flash_sub') + '</span></button>' +
+      '<button class="card mode-card" onclick="Quiz.start(\'mistakes\')"><span class="mode-icon">🔁</span><b>' + I18N.t('mode_mistakes') + '</b><span>' + (mistakes ? I18N.t('study_mistakes_some', { n: mistakes }) : I18N.t('study_mistakes_none')) + '</span></button>' +
+      '<button class="card mode-card" onclick="App.show(\'exam\')"><span class="mode-icon">📝</span><b>' + I18N.t('mode_exam') + '</b><span>' + I18N.t('mode_exam_sub2') + '</span></button>' +
       '</div>' +
-      '<h2 class="section-title">Practice by Topic</h2>' +
+      '<h2 class="section-title">' + I18N.t('study_topics') + '</h2>' +
       '<div class="grid topics-grid">' +
       TOPICS.map(t => {
         const qs = Store.questionsByTopic(t.id);
@@ -150,8 +174,8 @@ const App = {
         const acc = pt && pt.answered ? Math.round((pt.correct / pt.answered) * 100) : null;
         const seen = qs.filter(q => Store.state.answered[q.id]).length;
         return '<button class="card topic-card" onclick="Quiz.start(\'topic\', \'' + t.id + '\')">' +
-          '<span class="topic-icon">' + t.icon + '</span><b>' + esc(t.name) + (Store.state.mastery[t.id] ? ' ★' : '') + '</b>' +
-          '<span class="topic-sub">' + qs.length + ' questions · ' + seen + ' seen' + (acc !== null ? ' · ' + acc + '%' : '') + '</span>' +
+          '<span class="topic-icon">' + t.icon + '</span><b>' + esc(I18N.topicName(t)) + (Store.state.mastery[t.id] ? ' ★' : '') + '</b>' +
+          '<span class="topic-sub">' + I18N.t('q_count', { n: qs.length }) + ' · ' + I18N.t('seen_count', { s: seen }) + (acc !== null ? ' · ' + acc + '%' : '') + '</span>' +
           '<div class="bar mini"><div class="bar-fill" style="width:' + (qs.length ? Math.round((seen / qs.length) * 100) : 0) + '%"></div></div>' +
           '</button>';
       }).join('') +
@@ -162,19 +186,19 @@ const App = {
   renderSigns() {
     const host = document.getElementById('view-signs');
     const cats = [
-      { id: 'regulatory', label: 'Regulatory — what you MUST do', emoji: '⛔' },
-      { id: 'warning', label: 'Warning — what\'s ahead', emoji: '⚠️' },
-      { id: 'guide', label: 'Guide & Services', emoji: '🧭' }
+      { id: 'regulatory', label: I18N.t('cat_regulatory') },
+      { id: 'warning', label: I18N.t('cat_warning') },
+      { id: 'guide', label: I18N.t('cat_guide') }
     ];
     host.innerHTML =
-      '<div class="pop-in"><h1>Road Signs Gallery 🛑</h1>' +
-      '<p class="sub">Every sign drawn with its real shape and color. Shapes and colors are test questions too!</p>' +
+      '<div class="pop-in"><h1>' + I18N.t('signs_title') + '</h1>' +
+      '<p class="sub">' + I18N.t('signs_sub') + '</p>' +
       cats.map(c =>
-        '<h2 class="section-title">' + c.emoji + ' ' + c.label + '</h2>' +
+        '<h2 class="section-title">' + c.label + '</h2>' +
         '<div class="grid signs-grid">' +
         SIGNS_META.filter(m => m.category === c.id).map(m =>
           '<div class="card sign-card"><div class="sign-box">' + SIGN_SVGS[m.key] + '</div>' +
-          '<b>' + esc(m.name) + '</b><p>' + esc(m.meaning) + '</p></div>').join('') +
+          '<b>' + esc(I18N.signName(m)) + '</b><p>' + esc(I18N.signMeaning(m)) + '</p></div>').join('') +
         '</div>').join('') +
       '</div>';
   }
@@ -186,5 +210,6 @@ window.App = App; window.Store = Store; window.TOPICS = TOPICS;
 window.Quiz = Quiz; window.Exam = Exam; window.Cards = Cards;
 window.Rewards = Rewards; window.Progress = Progress;
 window.Mascot = Mascot; window.Tour = Tour; window.Confetti = Confetti;
+window.I18N = I18N; window.Chat = Chat;
 
 document.addEventListener('DOMContentLoaded', () => App.init());

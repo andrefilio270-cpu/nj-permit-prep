@@ -1,5 +1,5 @@
 // js/flashcards.js — Flashcards mode (R5.3): flip animation, prev/next,
-// "I knew it / I didn't" self-assessment. No points (R6.5 — self-graded).
+// self-assessment. No points (R6.5). Bilingual via I18N (R11.2/R11.3).
 // Loaded by index.html; used via the global Cards.
 
 const Cards = {
@@ -8,13 +8,13 @@ const Cards = {
   renderPicker() {
     const host = document.getElementById('view-flashcards');
     host.innerHTML =
-      '<div class="pop-in"><h1>Flashcards 🃏</h1><p class="sub">Pick a deck — flip each card, then be honest: did you know it?</p>' +
+      '<div class="pop-in"><h1>' + I18N.t('flash_title') + '</h1><p class="sub">' + I18N.t('flash_sub') + '</p>' +
       '<div class="grid topics-grid">' +
-      '<button class="card topic-card" onclick="Cards.start(null)"><span class="topic-icon">✨</span><b>All Topics</b><span class="topic-sub">' + Store.bank().length + ' cards</span></button>' +
+      '<button class="card topic-card" onclick="Cards.start(null)"><span class="topic-icon">✨</span><b>' + I18N.t('all_topics') + '</b><span class="topic-sub">' + I18N.t('cards_count', { n: Store.bank().length }) + '</span></button>' +
       TOPICS.map(t =>
         '<button class="card topic-card" onclick="Cards.start(\'' + t.id + '\')">' +
-        '<span class="topic-icon">' + t.icon + '</span><b>' + esc(t.name) + '</b>' +
-        '<span class="topic-sub">' + Store.questionsByTopic(t.id).length + ' cards</span></button>').join('') +
+        '<span class="topic-icon">' + t.icon + '</span><b>' + esc(I18N.topicName(t)) + '</b>' +
+        '<span class="topic-sub">' + I18N.t('cards_count', { n: Store.questionsByTopic(t.id).length }) + '</span></button>').join('') +
       '</div></div>';
   },
 
@@ -30,7 +30,7 @@ const Cards = {
     const q = this.deck[this.idx];
     host.innerHTML =
       '<div class="quiz-head pop-in">' +
-      '<button class="btn ghost" onclick="Cards.renderPicker()">← Decks</button>' +
+      '<button class="btn ghost" onclick="Cards.renderPicker()">' + I18N.t('decks') + '</button>' +
       '<div class="quiz-meta"><span class="chip">🃏 Flashcards</span></div>' +
       '<div class="quiz-count">' + (this.idx + 1) + ' / ' + this.deck.length + '</div></div>' +
       '<div class="bar"><div class="bar-fill" style="width:' + Math.round((this.idx / this.deck.length) * 100) + '%"></div></div>' +
@@ -38,15 +38,15 @@ const Cards = {
       '<div class="flashcard ' + (flipped ? 'flipped' : '') + '" id="flashcard" onclick="Cards.flip()">' +
       '<div class="flash-face flash-front">' +
       (q.sign && window.SIGN_SVGS && SIGN_SVGS[q.sign] ? '<div class="sign-box small">' + SIGN_SVGS[q.sign] + '</div>' : '') +
-      '<p>' + esc(q.question) + '</p><span class="flash-hint">tap to flip ↻</span></div>' +
-      '<div class="flash-face flash-back"><p class="flash-answer">' + esc(q.choices[q.answerIndex]) + '</p>' +
-      '<p class="flash-expl">' + esc(q.explanation) + '</p><span class="flash-hint">tap to flip back ↻</span></div>' +
+      '<p>' + esc(I18N.qText(q)) + '</p><span class="flash-hint">' + I18N.t('flip_hint') + '</span></div>' +
+      '<div class="flash-face flash-back"><p class="flash-answer">' + esc(I18N.qChoices(q)[q.answerIndex]) + '</p>' +
+      '<p class="flash-expl">' + esc(I18N.qExpl(q)) + '</p><span class="flash-hint">' + I18N.t('flip_hint') + '</span></div>' +
       '</div></div>' +
       '<div class="flash-controls pop-in">' +
-      '<button class="btn ghost" ' + (this.idx === 0 ? 'disabled' : '') + ' onclick="Cards.prevCard()">← Prev</button>' +
-      '<button class="btn knew" onclick="Cards.mark(true)">😊 I knew it</button>' +
-      '<button class="btn didnt" onclick="Cards.mark(false)">😅 I didn\'t</button>' +
-      '<button class="btn ghost" ' + (this.idx >= this.deck.length - 1 ? 'disabled' : '') + ' onclick="Cards.nextCard()">Next →</button>' +
+      '<button class="btn ghost" ' + (this.idx === 0 ? 'disabled' : '') + ' onclick="Cards.prevCard()">' + I18N.t('prev') + '</button>' +
+      '<button class="btn knew" onclick="Cards.mark(true)">' + I18N.t('knew') + '</button>' +
+      '<button class="btn didnt" onclick="Cards.mark(false)">' + I18N.t('didnt') + '</button>' +
+      '<button class="btn ghost" ' + (this.idx >= this.deck.length - 1 ? 'disabled' : '') + ' onclick="Cards.nextCard()">' + I18N.t('next') + '</button>' +
       '</div>';
   },
 
@@ -70,13 +70,13 @@ const Cards = {
     host.innerHTML =
       '<div class="card summary-card pop-in">' +
       '<div class="summary-ring ' + (pct >= 80 ? 'good' : pct >= 50 ? 'mid' : 'low') + '"><span>' + pct + '%</span></div>' +
-      '<h2>Deck finished!</h2>' +
-      '<p class="summary-line">You knew <b>' + this.knew + '</b> and are still learning <b>' + this.didnt + '</b> of ' + total + ' cards.</p>' +
-      '<p class="exam-note">Flashcards don\'t earn points — quizzes and exams do. Ready to cash in what you learned?</p>' +
+      '<h2>' + I18N.t('deck_done') + '</h2>' +
+      '<p class="summary-line">' + I18N.t('deck_line', { k: this.knew, d: this.didnt, n: total }) + '</p>' +
+      '<p class="exam-note">' + I18N.t('no_points_note') + '</p>' +
       '<div class="summary-actions">' +
-      '<button class="btn primary" onclick="Cards.renderPicker()">Another Deck</button>' +
-      '<button class="btn ghost" onclick="Quiz.start(\'quick\')">Quick Quiz (earn points!)</button>' +
+      '<button class="btn primary" onclick="Cards.renderPicker()">' + I18N.t('another_deck') + '</button>' +
+      '<button class="btn ghost" onclick="Quiz.start(\'quick\')">' + I18N.t('quick_quiz_btn') + '</button>' +
       '</div></div>';
-    Mascot.say('Nice review session! Now turn it into points with a quiz! ⭐', 3800);
+    Mascot.say(I18N.t('flash_mascot'), 3800);
   }
 };

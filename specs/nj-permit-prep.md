@@ -70,3 +70,10 @@ Site de estudo **para uso pessoal** (a esposa do André) para passar no **NJ MVC
 - Outros estados além de NJ (só a estrutura do seletor).
 - Mascote com IA/chat livre (só scriptado; arquitetura permite evoluir depois).
 - Cópia literal de conteúdo de sites de terceiros.
+
+## 11. v2 — Bilíngue PT/EN + Chat do Bubbles (adicionado 2026-07-08)
+- **R11.1** — Botão de idioma **PT/EN** no header; escolha persistida em localStorage; padrão **português**.
+- **R11.2** — TODA a interface traduzida nos dois idiomas: nav, dashboard, modos, quiz, exame, flashcards, recompensas, progresso, galeria, mensagens/dicas/reações do mascote e o tour completo.
+- **R11.3** — Questões bilíngues: cada uma das 208 ganha `question_pt`, `choices_pt` (MESMA ordem do original — answerIndex não muda) e `explanation_pt`; placas ganham `name_pt`/`meaning_pt`. A renderização segue o idioma ativo. Termos técnicos corretos de trânsito em PT-BR; nomes próprios (New Jersey, MVC, GDL) preservados; unidades mantidas (pés, mph).
+- **R11.4** — **Chat "Pergunte ao Bubbles"**: painel de chat aberto por botão junto ao mascote; a usuária digita qualquer pergunta relacionada ao conteúdo e o Bubbles responde **na hora, offline e sem API**, buscando nas 208 questões (campos EN e PT), explicações e placas; resposta = resposta correta + explicação + questões relacionadas; caso sem resultado, responde de forma simpática sugerindo termos; funciona nos dois idiomas.
+- **R11.5** — Zero regressão nos requisitos R2–R9 (site continua estático, file://, sem backend).

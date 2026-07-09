@@ -2,14 +2,14 @@
 // Loaded by index.html before every other js/ module; consumed via the globals TOPICS, Store, shuffle, esc.
 
 const TOPICS = [
-  { id: 'signs', name: 'Road Signs', icon: '🛑' },
-  { id: 'laws', name: 'Traffic Laws & Rules', icon: '🚦' },
-  { id: 'speed', name: 'Speed Limits & Parking', icon: '🅿️' },
-  { id: 'alcohol', name: 'Alcohol, Drugs & DUI', icon: '🚫' },
-  { id: 'safe', name: 'Safe & Defensive Driving', icon: '🛡️' },
-  { id: 'sharing', name: 'Sharing the Road', icon: '🚌' },
-  { id: 'license', name: 'Licenses & Penalties', icon: '🪪' },
-  { id: 'emergency', name: 'Emergencies & Conditions', icon: '⚠️' }
+  { id: 'signs', name: 'Road Signs', name_pt: 'Placas de Trânsito', icon: '🛑' },
+  { id: 'laws', name: 'Traffic Laws & Rules', name_pt: 'Leis de Trânsito & Regras', icon: '🚦' },
+  { id: 'speed', name: 'Speed Limits & Parking', name_pt: 'Velocidade & Estacionamento', icon: '🅿️' },
+  { id: 'alcohol', name: 'Alcohol, Drugs & DUI', name_pt: 'Álcool, Drogas & DUI', icon: '🚫' },
+  { id: 'safe', name: 'Safe & Defensive Driving', name_pt: 'Direção Segura & Defensiva', icon: '🛡️' },
+  { id: 'sharing', name: 'Sharing the Road', name_pt: 'Compartilhando a Via', icon: '🚌' },
+  { id: 'license', name: 'Licenses & Penalties', name_pt: 'Carteira & Penalidades', icon: '🪪' },
+  { id: 'emergency', name: 'Emergencies & Conditions', name_pt: 'Emergências & Condições', icon: '⚠️' }
 ];
 
 const POINTS = { easy: 10, medium: 20, hard: 30 };
@@ -47,7 +47,8 @@ const Store = {
       streak: 0,
       bestStreak: 0,
       tourSeen: false,   // R8.3
-      mastery: {}        // topicId -> true once the +300 bonus was granted
+      mastery: {},       // topicId -> true once the +300 bonus was granted
+      lang: 'pt'         // R11.1 — interface language, Portuguese by default
     };
   },
 
@@ -123,7 +124,7 @@ const Store = {
     if (acc < 0.8) return 0;
     s.mastery[topicId] = true;
     if (window.Confetti) Confetti.burst(140);        // R3.3 — celebrate completing a topic
-    if (window.Mascot) Mascot.say('Topic mastered! +' + BONUS_MASTERY + ' bonus points! 🎉', 5000);
+    if (window.Mascot) Mascot.say(I18N.t('mastery_msg', { b: BONUS_MASTERY }), 5000);
     return BONUS_MASTERY;
   },
 

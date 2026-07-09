@@ -1,5 +1,5 @@
-// js/rewards.js — user-defined rewards (R7): she writes what she'll win and the point goal;
-// animated progress bars, unlock celebration, claim/edit/delete. Points are never spent (R7.5).
+// js/rewards.js — user-defined rewards (R7): animated progress bars, unlock celebration,
+// claim/edit/delete. Points are never spent (R7.5). Bilingual via I18N (R11.2).
 // Loaded by index.html; used via the global Rewards.
 
 const Rewards = {
@@ -11,15 +11,15 @@ const Rewards = {
     const pts = Store.state.points;
 
     host.innerHTML =
-      '<div class="pop-in"><h1>Rewards 🎁</h1>' +
-      '<p class="sub">Write down what YOU will treat yourself with — and how many points it takes. Reach the goal and claim it!</p>' +
+      '<div class="pop-in"><h1>' + I18N.t('rewards_title') + '</h1>' +
+      '<p class="sub">' + I18N.t('rewards_sub') + '</p>' +
       '<div class="card reward-form">' +
-      '<input type="text" id="reward-title" maxlength="80" placeholder="What will you win? (e.g., Dinner at my favorite restaurant)">' +
-      '<input type="number" id="reward-cost" min="1" placeholder="Points needed (e.g., 500)">' +
-      '<button class="btn primary" onclick="Rewards.add()">Add Reward ✨</button>' +
+      '<input type="text" id="reward-title" maxlength="80" placeholder="' + I18N.t('ph_title') + '">' +
+      '<input type="number" id="reward-cost" min="1" placeholder="' + I18N.t('ph_cost') + '">' +
+      '<button class="btn primary" onclick="Rewards.add()">' + I18N.t('add_reward') + '</button>' +
       '</div>' +
       (list.length === 0
-        ? '<div class="card empty-state"><div class="empty-emoji">🎀</div><p>No rewards yet! Create your first one above — a coffee, a movie night, new shoes... you earned it, you pick it!</p></div>'
+        ? '<div class="card empty-state"><div class="empty-emoji">🎀</div><p>' + I18N.t('rewards_empty') + '</p></div>'
         : '<div class="rewards-list">' + list.map(r => this.cardHTML(r, pts)).join('') + '</div>') +
       '</div>';
   },
@@ -33,24 +33,24 @@ const Rewards = {
         '<input type="text" id="edit-title-' + r.id + '" maxlength="80" value="' + esc(r.title) + '">' +
         '<input type="number" id="edit-cost-' + r.id + '" min="1" value="' + r.cost + '">' +
         '<div class="reward-actions">' +
-        '<button class="btn primary" onclick="Rewards.saveEdit(' + r.id + ')">Save</button>' +
-        '<button class="btn ghost" onclick="Rewards.cancelEdit()">Cancel</button></div></div>';
+        '<button class="btn primary" onclick="Rewards.saveEdit(' + r.id + ')">' + I18N.t('save') + '</button>' +
+        '<button class="btn ghost" onclick="Rewards.cancelEdit()">' + I18N.t('cancel') + '</button></div></div>';
     }
 
     return '<div class="card reward-card ' + (r.claimed ? 'claimed' : unlocked ? 'unlocked' : '') + '" id="rw-' + r.id + '">' +
       '<div class="reward-top"><span class="reward-emoji">' + (r.claimed ? '🏆' : unlocked ? '🎉' : '🎁') + '</span>' +
       '<div class="reward-info"><b>' + esc(r.title) + '</b>' +
-      '<span class="reward-goal">' + Math.min(pts, r.cost) + ' / ' + r.cost + ' pts</span></div></div>' +
+      '<span class="reward-goal">' + Math.min(pts, r.cost) + ' / ' + r.cost + ' ' + I18N.t('pts') + '</span></div></div>' +
       '<div class="bar reward-bar"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
       '<div class="reward-actions">' +
       (r.claimed
-        ? '<span class="claimed-label">Claimed! Enjoy it 💜</span>'
+        ? '<span class="claimed-label">' + I18N.t('claimed_label') + '</span>'
         : unlocked
-          ? '<button class="btn primary" onclick="Rewards.claim(' + r.id + ')">Claim! 🎉</button>'
-          : '<span class="reward-remaining">' + (r.cost - pts) + ' pts to go</span>') +
+          ? '<button class="btn primary" onclick="Rewards.claim(' + r.id + ')">' + I18N.t('claim') + '</button>'
+          : '<span class="reward-remaining">' + I18N.t('to_go', { n: r.cost - pts }) + '</span>') +
       '<span class="reward-mini-actions">' +
-      '<button class="mini-btn" title="Edit" onclick="Rewards.edit(' + r.id + ')">✏️</button>' +
-      '<button class="mini-btn" title="Delete" onclick="Rewards.remove(' + r.id + ')">🗑</button></span>' +
+      '<button class="mini-btn" onclick="Rewards.edit(' + r.id + ')">✏️</button>' +
+      '<button class="mini-btn" onclick="Rewards.remove(' + r.id + ')">🗑</button></span>' +
       '</div></div>';
   },
 
@@ -59,12 +59,12 @@ const Rewards = {
     const costEl = document.getElementById('reward-cost');
     const title = titleEl.value.trim();
     const cost = parseInt(costEl.value, 10);
-    if (!title) { Mascot.say('Write what you want to win first! 🎁', 2800); titleEl.focus(); return; }
-    if (!cost || cost < 1) { Mascot.say('And how many points does it cost? Try 300 or 500!', 2800); costEl.focus(); return; }
+    if (!title) { Mascot.say(I18N.t('reward_need_title'), 2800); titleEl.focus(); return; }
+    if (!cost || cost < 1) { Mascot.say(I18N.t('reward_need_cost'), 2800); costEl.focus(); return; }
     Store.state.rewards.push({ id: Date.now(), title, cost, claimed: false, celebrated: Store.state.points >= cost });
     Store.save();
     this.render();
-    Mascot.say('Ooh, "' + title + '" — great goal! Go earn those points! 💪', 3200);
+    Mascot.say(I18N.t('reward_added', { title: esc(title) }), 3200);
   },
 
   edit(id) { this.editingId = id; this.render(); },
@@ -83,7 +83,7 @@ const Rewards = {
   },
 
   remove(id) {
-    if (!confirm('Delete this reward?')) return;
+    if (!confirm(I18N.t('delete_confirm'))) return;
     Store.state.rewards = Store.state.rewards.filter(r => r.id !== id);
     Store.save();
     this.render();
@@ -95,7 +95,7 @@ const Rewards = {
     r.claimed = true;                                  // R7.5 — points are NOT deducted
     Store.save();
     Confetti.burst(160);
-    Mascot.say('YOU DID IT! Go enjoy "' + esc(r.title) + '" — you totally earned it! 🎉💜', 5000);
+    Mascot.say(I18N.t('claim_msg', { title: esc(r.title) }), 5000);
     this.render();
   },
 
@@ -108,7 +108,7 @@ const Rewards = {
         r.celebrated = true;
         changed = true;
         Confetti.burst(150);
-        Mascot.say('🎁 Reward unlocked: "' + esc(r.title) + '"! Go to Rewards and claim it!', 5000);
+        Mascot.say(I18N.t('unlock_msg', { title: esc(r.title) }), 5000);
       }
     });
     if (changed) {

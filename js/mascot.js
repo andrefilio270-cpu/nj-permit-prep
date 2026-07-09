@@ -1,12 +1,12 @@
 // js/mascot.js — Bubbles, the pink support buddy (R8): idle SVG mascot, speech bubble,
-// contextual tips per page, reactions, and the first-visit guided tour with spotlight.
+// contextual tips per page (via I18N — R11.2), reactions, and the guided tour with spotlight.
 // Loaded by index.html; used via the globals Mascot and Tour.
 
 const Mascot = {
   el: null, bubble: null, hideTimer: null,
 
   SVG:
-    '<svg viewBox="0 0 200 200" class="bubbles-svg" id="bubbles-svg" title="Click me for a tour!">' +
+    '<svg viewBox="0 0 200 200" class="bubbles-svg" id="bubbles-svg" title="Tour!">' +
     '<defs><radialGradient id="bubblesBody" cx="50%" cy="38%" r="70%">' +
     '<stop offset="0%" stop-color="#ffc9ea"/><stop offset="65%" stop-color="#ff8fd8"/><stop offset="100%" stop-color="#ef6bbd"/>' +
     '</radialGradient></defs>' +
@@ -26,21 +26,6 @@ const Mascot = {
     '<path class="mouth-sad" d="M86 146 Q100 132 114 146" stroke="#3b0764" stroke-width="5" fill="none" stroke-linecap="round"/>' +
     '</svg>',
 
-  // R8.4 — scripted contextual tip for each page
-  TIPS: {
-    home: 'This is your dashboard! See your points, your progress, and jump into any study mode. 💜',
-    study: 'Pick how you want to study: by topic, quick quiz, flashcards, or reviewing your mistakes!',
-    quiz: "Read each question carefully — I'll cheer for every right answer! ✨",
-    exam: 'This is just like the real NJ test: 50 questions, you need 40 right. Deep breath — you got this!',
-    signs: 'Shapes and colors have meaning! Octagon = stop, diamond = warning, blue = services.',
-    rewards: 'Write a treat for yourself and how many points it takes. Then go earn it! 🎁',
-    progress: "Here's how you're doing: accuracy per topic, your streaks, and every exam you took.",
-    flashcards: 'Flip the card to see the answer — and be honest about what you really knew! 😊'
-  },
-
-  PRAISE: ['Yes! Nailed it! 🎉', "Correct! You're on fire! 🔥", 'Amazing! Keep going! 💜', "That's right! So proud of you!", 'Woohoo! Another one! ⭐'],
-  COMFORT: ['Almost! Read the explanation — it helps!', 'No worries, mistakes are how we learn! 💗', "You'll get it next time, I believe in you!", 'Tricky one! It will come back in Mistake Review.'],
-
   init() {
     this.el = document.getElementById('mascot');
     this.el.innerHTML = this.SVG + '<div class="mascot-bubble hidden" id="mascot-bubble"></div>';
@@ -59,13 +44,16 @@ const Mascot = {
     this.hideTimer = setTimeout(() => this.bubble.classList.add('hidden'), ms || 3600);
   },
 
+  // R8.4 / R11.2 — scripted contextual tip per page, in the active language
   tip(view) {
     if (Tour.active) return;
-    if (this.TIPS[view]) this.say(this.TIPS[view], 4200);
+    const key = 'tip_' + view;
+    const s = I18N.t(key);
+    if (s !== key) this.say(s, 4200);
   },
 
   react(good) {
-    const list = good ? this.PRAISE : this.COMFORT;
+    const list = I18N.t(good ? 'praise' : 'comfort');
     this.say(list[(Math.random() * list.length) | 0], 2400);
     const svg = document.getElementById('bubbles-svg');
     svg.classList.remove('happy', 'sad');
@@ -75,22 +63,14 @@ const Mascot = {
   }
 };
 
-// R8.2 — first-visit guided tour: spotlight each area with Next/Back/Skip.
+// R8.2 / R11.2 — first-visit guided tour, fully bilingual (texts come from I18N at render time).
 const Tour = {
   active: false,
   idx: 0,
 
-  steps: [
-    { target: null, text: "Hi! I'm <b>Bubbles</b> 💗 your study buddy! I'll show you around so you can start earning your New Jersey license. Ready?" },
-    { target: '#points-pill', text: 'These are your <b>points</b>! Every correct answer earns points — harder questions are worth more (10/20/30), and the exam pays +50%!' },
-    { target: '[data-view="study"]', text: 'The <b>Study</b> hub! Practice by topic, take a 10-question Quick Quiz, flip Flashcards, or re-try your past mistakes.' },
-    { target: '[data-view="exam"]', text: 'The <b>Exam Simulation</b> — exactly like the real NJ MVC test: 50 questions, you pass with 40 correct (80%). Passing earns +500 points!' },
-    { target: '[data-view="signs"]', text: 'The <b>Road Signs gallery</b> — every sign drawn with its real shape and color, organized by category. Great for visual review!' },
-    { target: '[data-view="rewards"]', text: 'My favorite: <b>Rewards</b>! Write what YOU will treat yourself with (a dinner, a gift...) and how many points it costs. Reach it and celebrate! 🎉' },
-    { target: '[data-view="progress"]', text: '<b>Progress</b> shows your accuracy per topic, your best streak, and the history of every exam simulation you took.' },
-    { target: '#state-select', text: 'This site is set to <b>New Jersey</b> rules. Other states are coming later — everything you study here matches the NJ Driver Manual.' },
-    { target: null, text: "That's everything! Click me anytime to see this tour again. Now let's go get that license! 🚗💨" }
-  ],
+  // targets only — the text of step i is I18N.t('tour_' + i)
+  targets: [null, '#points-pill', '[data-view="study"]', '[data-view="exam"]', '[data-view="signs"]',
+    '[data-view="rewards"]', '[data-view="progress"]', '#state-select', null],
 
   start() {
     this.active = true;
@@ -100,10 +80,10 @@ const Tour = {
   },
 
   show() {
-    const step = this.steps[this.idx];
     const spot = document.getElementById('tour-spotlight');
     const panel = document.getElementById('tour-panel');
-    const tgt = step.target ? document.querySelector(step.target) : null;
+    const sel = this.targets[this.idx];
+    const tgt = sel ? document.querySelector(sel) : null;
 
     if (tgt) {
       const r = tgt.getBoundingClientRect();
@@ -120,19 +100,18 @@ const Tour = {
       spot.style.height = '0px';
     }
 
-    const last = this.idx === this.steps.length - 1;
+    const last = this.idx === this.targets.length - 1;
     panel.innerHTML =
       '<div class="tour-mascot">' + Mascot.SVG.replace('id="bubbles-svg"', 'id="bubbles-tour"') + '</div>' +
-      '<div class="tour-text">' + step.text + '</div>' +
+      '<div class="tour-text">' + I18N.t('tour_' + this.idx) + '</div>' +
       '<div class="tour-controls">' +
-      '<span class="tour-dots">' + this.steps.map((s, i) => '<i class="' + (i === this.idx ? 'on' : '') + '"></i>').join('') + '</span>' +
+      '<span class="tour-dots">' + this.targets.map((s, i) => '<i class="' + (i === this.idx ? 'on' : '') + '"></i>').join('') + '</span>' +
       '<span class="tour-btns">' +
-      (this.idx > 0 ? '<button class="btn ghost" onclick="Tour.back()">Back</button>' : '') +
-      '<button class="btn ghost" onclick="Tour.end()">Skip</button>' +
-      '<button class="btn primary" onclick="Tour.next()">' + (last ? "Let's go! 🚀" : 'Next') + '</button>' +
+      (this.idx > 0 ? '<button class="btn ghost" onclick="Tour.back()">' + I18N.t('back') + '</button>' : '') +
+      '<button class="btn ghost" onclick="Tour.end()">' + I18N.t('skip') + '</button>' +
+      '<button class="btn primary" onclick="Tour.next()">' + (last ? I18N.t('lets_go') : I18N.t('next_btn')) + '</button>' +
       '</span></div>';
 
-    // place the panel: below the spotlight if there is room, else above / centered
     const ph = 230;
     let top;
     if (tgt) {
@@ -145,7 +124,7 @@ const Tour = {
   },
 
   next() {
-    if (this.idx >= this.steps.length - 1) return this.end(true);
+    if (this.idx >= this.targets.length - 1) return this.end(true);
     this.idx++;
     this.show();
   },
@@ -161,7 +140,7 @@ const Tour = {
     Store.save();
     if (finished) {
       Confetti.burst(70);
-      Mascot.say("You're all set! Pick a study mode and let's go! 💜", 4000);
+      Mascot.say(I18N.t('tour_done'), 4000);
     }
   }
 };

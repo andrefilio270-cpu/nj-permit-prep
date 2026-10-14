@@ -6,7 +6,7 @@ const STRINGS = {
   en: {
     nav_home: '🏠 Home', nav_study: '📚 Study', nav_exam: '📝 Exam', nav_signs: '🛑 Signs',
     nav_rewards: '🎁 Rewards', nav_progress: '📈 Progress', nav_tour: '✨ Tour',
-    soon: ' — soon', only_nj: 'Only New Jersey is ready for now — more states coming soon! 🗺',
+    soon: ' — soon', only_nj: 'New Jersey and North Carolina are ready — more states coming soon! 🗺',
     welcome_back: 'Welcome back! Ready to study? 💜', pts: 'pts',
     diff_easy: 'EASY', diff_medium: 'MEDIUM', diff_hard: 'HARD',
 
@@ -116,7 +116,7 @@ const STRINGS = {
     tour_4: 'The <b>Road Signs gallery</b> — every sign drawn with its real shape and color, organized by category. Great for visual review!',
     tour_5: 'My favorite: <b>Rewards</b>! Write what YOU will treat yourself with (a dinner, a gift...) and how many points it costs. Reach it and celebrate! 🎉',
     tour_6: '<b>Progress</b> shows your accuracy per topic, your best streak, and the history of every exam simulation you took.',
-    tour_7: 'This site is set to <b>New Jersey</b> rules. Other states are coming later — everything here matches the NJ Driver Manual.',
+    tour_7: 'This site is set to <b>New Jersey</b> rules. Everything here matches the NJ Driver Manual — switch to North Carolina here anytime.',
     tour_8: "That's everything! Click me anytime to see this tour again — and use the 💬 button to ask me anything about the questions! Now let's go get that license! 🚗💨",
     back: 'Back', skip: 'Skip', next_btn: 'Next', lets_go: "Let's go! 🚀",
     tour_done: "You're all set! Pick a study mode and let's go! 💜",
@@ -130,7 +130,7 @@ const STRINGS = {
   pt: {
     nav_home: '🏠 Início', nav_study: '📚 Estudar', nav_exam: '📝 Simulado', nav_signs: '🛑 Placas',
     nav_rewards: '🎁 Recompensas', nav_progress: '📈 Progresso', nav_tour: '✨ Tour',
-    soon: ' — em breve', only_nj: 'Só New Jersey está pronto por enquanto — mais estados em breve! 🗺',
+    soon: ' — em breve', only_nj: 'New Jersey e North Carolina estão prontos — mais estados em breve! 🗺',
     welcome_back: 'Bem-vinda de volta! Pronta pra estudar? 💜', pts: 'pts',
     diff_easy: 'FÁCIL', diff_medium: 'MÉDIA', diff_hard: 'DIFÍCIL',
 
@@ -240,7 +240,7 @@ const STRINGS = {
     tour_4: 'A <b>galeria de Placas</b> — cada placa desenhada com forma e cor reais, organizada por categoria. Ótima pra revisão visual!',
     tour_5: 'Minha favorita: <b>Recompensas</b>! Escreva com o que VOCÊ vai se presentear (um jantar, um presente...) e quantos pontos custa. Bata a meta e comemore! 🎉',
     tour_6: 'O <b>Progresso</b> mostra sua precisão por tópico, sua melhor sequência e o histórico de todos os simulados.',
-    tour_7: 'O site está configurado com as regras de <b>New Jersey</b>. Outros estados vêm depois — tudo aqui segue o manual do NJ MVC.',
+    tour_7: 'O site está configurado com as regras de <b>New Jersey</b>. Tudo aqui segue o manual do NJ MVC — troque para North Carolina aqui quando quiser.',
     tour_8: 'É isso! Clique em mim pra rever este tour — e use o botão 💬 pra me perguntar qualquer coisa sobre as questões! Agora bora tirar essa carteira! 🚗💨',
     back: 'Voltar', skip: 'Pular', next_btn: 'Próximo', lets_go: 'Bora! 🚀',
     tour_done: 'Prontinho! Escolha um modo de estudo e bora! 💜',

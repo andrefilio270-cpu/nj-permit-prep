@@ -11,15 +11,22 @@ const App = {
     'New Mexico', 'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island', 'South Carolina',
     'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'],
 
+  // states with a ready-made site; the selector jumps between the sibling folders
+  READY: { 'New Jersey': 'index.html', 'North Carolina': 'nc/index.html' },
+  HOME_STATE: 'New Jersey',
+
   init() {
     Store.load();
     Confetti.init();
     Mascot.init();
     Chat.init();
 
-    // R9.4 — state selector: only New Jersey enabled
+    // R9.4 — state selector: New Jersey (this site) and North Carolina (nc/ sibling site) enabled
     const sel = document.getElementById('state-select');
-    sel.addEventListener('change', () => { sel.value = 'New Jersey'; });
+    sel.addEventListener('change', () => {
+      if (sel.value !== this.HOME_STATE && this.READY[sel.value]) window.location.href = this.READY[sel.value];
+      else sel.value = this.HOME_STATE;
+    });
     sel.addEventListener('click', () => {
       if (!Tour.active) Mascot.say(I18N.t('only_nj'), 3000);
     });
@@ -56,8 +63,8 @@ const App = {
 
     const sel = document.getElementById('state-select');
     sel.innerHTML = this.STATES.map(s =>
-      '<option value="' + s + '"' + (s === 'New Jersey' ? ' selected' : ' disabled') + '>' +
-      s + (s === 'New Jersey' ? '' : I18N.t('soon')) + '</option>').join('');
+      '<option value="' + s + '"' + (s === this.HOME_STATE ? ' selected' : this.READY[s] ? '' : ' disabled') + '>' +
+      s + (this.READY[s] ? '' : I18N.t('soon')) + '</option>').join('');
 
     Chat.applyLang();
     if (Tour.active) Tour.show();

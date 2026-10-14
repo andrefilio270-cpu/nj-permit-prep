@@ -97,10 +97,14 @@ const Exam = {
   prev() { if (this.session.idx > 0) { this.session.idx--; this.render(); } },
   next() { if (this.session.idx < this.session.qs.length - 1) { this.session.idx++; this.render(); } },
 
-  finish() {
+  finish(confirmed) {
     const s = this.session;
     const missing = s.answers.filter(a => a === null).length;
-    if (missing > 0 && !confirm(I18N.t('unanswered_confirm', { n: missing }))) return;
+    if (missing > 0 && !confirmed) {
+      Dialog.confirm(I18N.t('unanswered_confirm', { n: missing }))
+        .then(ok => { if (ok && this.session === s) this.finish(true); });
+      return;
+    }
 
     s.done = true;
     clearInterval(this.timerInt);
@@ -170,8 +174,11 @@ const Exam = {
     this.session = null;
   },
 
-  quit() {
-    if (this.session && !this.session.done && !confirm(I18N.t('quit_exam_confirm'))) return;
+  quit(confirmed) {
+    if (this.session && !this.session.done && !confirmed) {
+      Dialog.confirm(I18N.t('quit_exam_confirm')).then(ok => { if (ok) this.quit(true); });
+      return;
+    }
     clearInterval(this.timerInt);
     this.session = null;
     App.show('home');

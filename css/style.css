@@ -1,6 +1,7 @@
 /* css/style.css — purple & black theme, animations everywhere (R3). Loaded by index.html. */
 
 :root {
+  color-scheme: dark;   /* single dark look: native controls & scrollbars follow it */
   --bg: #0a0612;
   --bg2: #120a1f;
   --panel: #171028;
@@ -46,7 +47,7 @@ body {
 /* ---------- header / nav ---------- */
 #topbar {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 22px; position: sticky; top: 0; z-index: 100;
+  padding: 14px 22px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 100;
   background: rgba(10, 6, 18, .85); backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
 }
@@ -503,3 +504,15 @@ h1 { font-size: 2rem; margin-bottom: 6px; }
 @media (max-width: 440px) {
   .logo > span { display: none; }
 }
+
+/* in-page confirmation dialog (js/dialog.js) */
+.dialog-overlay {
+  position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center;
+  padding: 16px; background: rgba(5, 3, 10, .72); backdrop-filter: blur(4px);
+}
+.dialog-box {
+  width: 100%; max-width: 420px; padding: 24px; border-radius: 18px;
+  background: var(--panel); border: 1px solid var(--border); box-shadow: 0 0 40px rgba(139, 92, 246, .35);
+}
+.dialog-msg { margin-bottom: 20px; line-height: 1.5; }
+.dialog-btns { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }

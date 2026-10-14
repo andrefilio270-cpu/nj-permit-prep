@@ -83,10 +83,12 @@ const Rewards = {
   },
 
   remove(id) {
-    if (!confirm(I18N.t('delete_confirm'))) return;
-    Store.state.rewards = Store.state.rewards.filter(r => r.id !== id);
-    Store.save();
-    this.render();
+    Dialog.confirm(I18N.t('delete_confirm')).then(ok => {
+      if (!ok) return;
+      Store.state.rewards = Store.state.rewards.filter(r => r.id !== id);
+      Store.save();
+      this.render();
+    });
   },
 
   claim(id) {

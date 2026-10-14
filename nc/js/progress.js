@@ -54,8 +54,12 @@ const Progress = {
 
   // R9.5 — double confirmation
   reset() {
-    if (!confirm(I18N.t('reset_c1'))) return;
-    if (!confirm(I18N.t('reset_c2'))) return;
+    Dialog.confirm(I18N.t('reset_c1'))
+      .then(ok => ok && Dialog.confirm(I18N.t('reset_c2')))
+      .then(ok => { if (ok) this.doReset(); });
+  },
+
+  doReset() {
     const lang = Store.state.lang;      // keep the language choice across resets
     Store.reset();
     Store.state.lang = lang;

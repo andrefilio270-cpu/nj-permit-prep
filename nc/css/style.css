@@ -478,8 +478,12 @@ h1 { font-size: 2rem; margin-bottom: 6px; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 640px) {
-  #topbar { padding: 12px 14px; }
-  .logo { font-size: 1.1rem; }
+  #topbar { padding: 12px 14px; gap: 8px; }
+  .logo { font-size: 1.1rem; flex-shrink: 0; }
+  .topbar-right { gap: 6px; min-width: 0; }
+  #state-select { max-width: 118px; padding: 7px 6px; }
+  .lang-btn { padding: 7px 8px; }
+  .points-pill { padding: 7px 11px; font-size: .85rem; white-space: nowrap; }
   #main-nav { top: 57px; padding: 10px 12px; gap: 6px; }
   #main-nav button { padding: 7px 11px; font-size: .78rem; }
   #app { padding: 18px 14px 190px; }
@@ -498,3 +502,8 @@ h1 { font-size: 2rem; margin-bottom: 6px; }
 /* NC — two-part exam (signs test + knowledge test) */
 .exam-part { text-align: center; margin: 12px 0 -6px; }
 .summary-line.part-line { margin: 4px 0; font-size: 1.05rem; }
+
+/* very narrow phones: the header keeps only the 🚗 icon so state + language + points fit */
+@media (max-width: 440px) {
+  .logo > span { display: none; }
+}

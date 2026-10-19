@@ -520,3 +520,8 @@ h1 { font-size: 2rem; margin-bottom: 6px; }
 }
 .dialog-msg { margin-bottom: 20px; line-height: 1.5; }
 .dialog-btns { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+
+/* where the progress is kept (js/cloud.js) */
+.sync-note { margin: -6px 0 18px; font-size: .9rem; color: var(--muted); }
+.sync-note.cloud { color: var(--good); }
+.sync-note.readonly { color: var(--gold); }

@@ -45,12 +45,18 @@ const App = {
     this.refreshPointsPill();
     this.applyLang();   // translates chrome + renders the current (home) view
 
-    // R8.2 — guided tour on first visit
-    if (!Store.state.tourSeen) {
-      setTimeout(() => Tour.start(), 900);
-    } else {
-      setTimeout(() => Mascot.say(I18N.t('welcome_back'), 3200), 700);
-    }
+    // R8.2 — guided tour on first visit (decided after the account copy of the progress is loaded)
+    Promise.all([Cloud.init(), new Promise(r => setTimeout(r, 900))]).then(() => {
+      if (!Store.state.tourSeen) { if (!Tour.active) Tour.start(); }
+      else Mascot.say(I18N.t('welcome_back'), 3200);
+    });
+  },
+
+  // a newer copy of the progress arrived from the person's account (other device / earlier visit)
+  onCloudState() {
+    if (Tour.active && Store.state.tourSeen) Tour.end();
+    this.refreshPointsPill();
+    this.applyLang();
   },
 
   // R11.1/R11.2 — apply the active language to all static chrome and re-render
@@ -221,6 +227,6 @@ window.App = App; window.Store = Store; window.TOPICS = TOPICS;
 window.Quiz = Quiz; window.Exam = Exam; window.Cards = Cards;
 window.Rewards = Rewards; window.Progress = Progress;
 window.Mascot = Mascot; window.Tour = Tour; window.Confetti = Confetti;
-window.I18N = I18N; window.Chat = Chat;
+window.I18N = I18N; window.Chat = Chat; window.Cloud = Cloud;
 
 document.addEventListener('DOMContentLoaded', () => App.init());

@@ -36,6 +36,7 @@ const Progress = {
 
     host.innerHTML =
       '<div class="pop-in"><h1>' + I18N.t('progress_title') + '</h1>' +
+      '<p class="sync-note ' + Cloud.status + '">' + I18N.t('sync_' + Cloud.status) + '</p>' +
       '<div class="stats-grid">' +
       '<div class="card stat"><b>' + s.points + '</b><span>' + I18N.t('stat_points') + '</span></div>' +
       '<div class="card stat"><b>' + totals.answered + '</b><span>' + I18N.t('stat_answers') + '</span></div>' +

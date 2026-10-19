@@ -81,6 +81,9 @@ const STRINGS = {
     unlock_msg: '🎁 Reward unlocked: "{title}"! Go to Rewards and claim it!',
     claim_msg: 'YOU DID IT! Go enjoy "{title}" — you totally earned it! 🎉💜',
 
+    sync_cloud: '☁️ Your progress is saved in your Claude account and syncs across your devices.',
+    sync_local: '📱 Your progress is saved only in this browser. Open the site from its claude.ai link while signed in to keep it in your account.',
+    sync_readonly: '⚠️ This link gives you view-only access, so progress stays only in this browser. Ask the owner for Contributor access to keep it in your account.',
     progress_title: 'Your Progress 📈',
     stat_points: 'total points', stat_answers: 'answers given', stat_accuracy: 'overall accuracy',
     stat_coverage: 'of the {n}-question bank seen', stat_streak: 'current streak 🔥', stat_best: 'best streak 🏅',
@@ -205,6 +208,9 @@ const STRINGS = {
     unlock_msg: '🎁 Recompensa desbloqueada: "{title}"! Vá em Recompensas e resgate!',
     claim_msg: 'VOCÊ CONSEGUIU! Vá aproveitar "{title}" — você mereceu demais! 🎉💜',
 
+    sync_cloud: '☁️ Seu progresso fica salvo na sua conta do Claude e sincroniza entre seus aparelhos.',
+    sync_local: '📱 Seu progresso está salvo só neste navegador. Abra o site pelo link do claude.ai com login feito para guardar na sua conta.',
+    sync_readonly: '⚠️ Este link te dá acesso só de visualização, então o progresso fica só neste navegador. Peça ao dono acesso de Contributor para guardar na sua conta.',
     progress_title: 'Seu Progresso 📈',
     stat_points: 'pontos totais', stat_answers: 'respostas dadas', stat_accuracy: 'precisão geral',
     stat_coverage: 'do banco de {n} questões visto', stat_streak: 'sequência atual 🔥', stat_best: 'melhor sequência 🏅',

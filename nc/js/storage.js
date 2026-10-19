@@ -56,6 +56,8 @@ const Store = {
     try {
       const raw = localStorage.getItem(this.KEY);
       this.state = raw ? Object.assign(this.defaults(), JSON.parse(raw)) : this.defaults();
+      // progress saved before cloud sync existed has no timestamp: still newer than "nothing"
+      if (raw && !this.state.updatedAt) this.state.updatedAt = 1;
     } catch (e) {
       this.state = this.defaults();
     }
@@ -63,7 +65,19 @@ const Store = {
   },
 
   save() {
+    this.state.updatedAt = Date.now();
+    this.saveLocal();
+    if (typeof Cloud !== 'undefined') Cloud.schedule();   // also keep it in the person's account
+  },
+
+  saveLocal() {
     try { localStorage.setItem(this.KEY, JSON.stringify(this.state)); } catch (e) { /* private mode */ }
+  },
+
+  // replace the whole state with a newer copy from the cloud (no re-upload)
+  adopt(state) {
+    this.state = Object.assign(this.defaults(), state);
+    this.saveLocal();
   },
 
   reset() { this.state = this.defaults(); this.save(); },

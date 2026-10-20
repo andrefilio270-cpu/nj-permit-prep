@@ -25,6 +25,8 @@ const STRINGS = {
     mode_signs: 'Road Signs', mode_signs_sub: 'Visual gallery by category',
     mode_shapes: 'Sign Test (shape &amp; color)', mode_shapes_sub: '12 signs with no text — get 9 right',
 
+    mode_official: 'Official Test Style', mode_official_sub: '10 questions like the NCDMV sample: "I / II" statements, points, statistics',
+    mode_title_official: 'Official Test Style',
     study_title: 'Study Modes 📚', study_topics: 'Practice by Topic',
     study_mistakes_some: '{n} waiting for revenge', study_mistakes_none: 'Empty — great job!',
     mode_exam_sub2: 'Both NC tests, just like the DMV',
@@ -159,6 +161,8 @@ const STRINGS = {
     mode_signs: 'Placas de Trânsito', mode_signs_sub: 'Galeria visual por categoria',
     mode_shapes: 'Prova de Placas (forma &amp; cor)', mode_shapes_sub: '12 placas sem texto — acerte 9',
 
+    mode_official: 'Estilo da Prova Oficial', mode_official_sub: '10 questões como as do exemplo do NCDMV: afirmações "I / II", pontos, estatísticas',
+    mode_title_official: 'Estilo da Prova Oficial',
     study_title: 'Modos de Estudo 📚', study_topics: 'Prática por Tópico',
     study_mistakes_some: '{n} esperando revanche', study_mistakes_none: 'Vazia — mandou muito bem!',
     mode_exam_sub2: 'As duas provas da NC, igual ao DMV',
@@ -293,6 +297,8 @@ const STRINGS = {
     mode_signs: 'Señales de Tránsito', mode_signs_sub: 'Galería visual por categoría',
     mode_shapes: 'Prueba de Señales (forma &amp; color)', mode_shapes_sub: '12 señales sin texto — acierta 9',
 
+    mode_official: 'Estilo del Examen Oficial', mode_official_sub: '10 preguntas como las del ejemplo del NCDMV: afirmaciones "I / II", puntos, estadísticas',
+    mode_title_official: 'Estilo del Examen Oficial',
     study_title: 'Modos de Estudio 📚', study_topics: 'Práctica por Tema',
     study_mistakes_some: '{n} esperando revancha', study_mistakes_none: '¡Vacío — excelente trabajo!',
     mode_exam_sub2: 'Las dos pruebas de NC, igual que en la DMV',

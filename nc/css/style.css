@@ -525,3 +525,6 @@ h1 { font-size: 2rem; margin-bottom: 6px; }
 .sync-note { margin: -6px 0 18px; font-size: .9rem; color: var(--muted); }
 .sync-note.cloud { color: var(--good); }
 .sync-note.readonly { color: var(--gold); }
+
+/* NC official "I / II" questions put each statement on its own line */
+.question-text, .wq, .flash-front p, .chat-rel-item { white-space: pre-line; }

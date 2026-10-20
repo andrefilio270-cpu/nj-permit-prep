@@ -13,13 +13,17 @@ Interface e conteúdo em **três idiomas: português (padrão), inglês e espanh
   (NC Driver Handbook, cap. 1; ncdot.gov → Driver License Tests)
 - **Prova de placas**: o candidato identifica as placas **pela cor e pela forma** e explica o significado.
   Classe C: precisa identificar corretamente **9 de 12** placas (regra administrativa do NC DMV publicada pelo OAH).
-- **Prova teórica**: leis de trânsito e direção segura — **25 questões, aprova com 20 (80%)** (formato
-  amplamente reportado; o manual não informa o número).
+- **Prova teórica**: leis de trânsito e direção segura — **25 questões sorteadas de um banco oficial de 100,
+  aprova com 20 (80%)** (confirmado na página oficial de questões de exemplo do NCDMV).
+- O exame oficial usa muito o formato **"I / II"** (duas afirmações; opções "Somente I / Somente II / I e II /
+  Nem I nem II") e cobra estatísticas e tabelas do manual (pontos, suspensões, % de mortes ligadas a álcool).
 
 ## 3. Restrições técnicas (iguais ao NJ — R2)
 - 100% estático (HTML + CSS + JS puro), funciona via `file://`, sem CDN, sem backend.
 - Pasta `nc/` autocontida: `index.html`, `css/`, `js/`, `data/`, `db/`, `specs/`.
-- Progresso em `localStorage` na chave `ncpp_state_v1` (separado do NJ, `njpp_state_v1`).
+- Progresso em `localStorage` na chave `ncpp_state_v1` (separado do NJ, `njpp_state_v1`) e, quando aberto
+  pelo link do claude.ai com login, também no espaço privado da pessoa no banco do artifact
+  (`data/users/<id>/nc`, `js/cloud.js`) — sobrevive ao fechar o app e sincroniza entre aparelhos.
 - Seletor de estado: **North Carolina** e **New Jersey** habilitados — trocar de estado navega entre
   `nc/index.html` e `../index.html`. Demais estados: "em breve".
 
@@ -31,6 +35,8 @@ Interface e conteúdo em **três idiomas: português (padrão), inglês e espanh
   `_pt` + `_es` (escolhas na MESMA ordem; `answerIndex` único).
 - Questões **de forma e cor**: `sign` = `shape-*` (placa sem texto, só forma/cor) — alimentam a Prova de Placas.
 - Distribuição ≈ 40% fácil / 40% média / 20% difícil.
+- `data/questions-official.js`: questões no estilo oficial do NCDMV (formato "I / II" + estatísticas e tabelas
+  do manual), distribuídas pelos 8 tópicos; as afirmações vão no texto da questão separadas por quebra de linha.
 
 ## 5. Placas (`data/signs.js`)
 - SVG puro; `SIGNS_META` com `name`/`meaning` + `_pt` + `_es`; categorias `regulatory`, `warning`, `guide`

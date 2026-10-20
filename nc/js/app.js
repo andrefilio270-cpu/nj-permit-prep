@@ -176,6 +176,7 @@ const App = {
     host.innerHTML =
       '<div class="pop-in"><h1>' + I18N.t('study_title') + '</h1>' +
       '<div class="grid modes-grid">' +
+      '<button class="card mode-card" onclick="Quiz.start(\'official\')"><span class="mode-icon">🏛️</span><b>' + I18N.t('mode_official') + '</b><span>' + I18N.t('mode_official_sub') + '</span></button>' +
       '<button class="card mode-card" onclick="Quiz.start(\'shapes\')"><span class="mode-icon">🔷</span><b>' + I18N.t('mode_shapes') + '</b><span>' + I18N.t('mode_shapes_sub') + '</span></button>' +
       '<button class="card mode-card" onclick="Quiz.start(\'quick\')"><span class="mode-icon">⚡</span><b>' + I18N.t('mode_quick') + '</b><span>' + I18N.t('mode_quick_sub') + '</span></button>' +
       '<button class="card mode-card" onclick="App.show(\'flashcards\')"><span class="mode-icon">🃏</span><b>' + I18N.t('mode_flash') + '</b><span>' + I18N.t('mode_flash_sub') + '</span></button>' +

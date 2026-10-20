@@ -13,6 +13,8 @@ const Quiz = {
       qs = shuffle(Store.questionsByTopic(topicId).slice());
     } else if (mode === 'shapes') {
       qs = shuffle(Store.shapeQuestions().slice()).slice(0, 12);  // NC sign test — 12 signs, pass with 9
+    } else if (mode === 'official') {
+      qs = shuffle(Store.officialQuestions().slice()).slice(0, 10);   // official NCDMV question style
     } else if (mode === 'quick') {
       qs = shuffle(Store.bank().slice()).slice(0, 10);            // R5.5 — 10 random questions
     } else { // mistakes

@@ -88,6 +88,9 @@ const Store = {
   isShapeQ(q) { return !!(q.sign && q.sign.indexOf('shape-') === 0); },
   shapeQuestions() { return this.bank().filter(q => this.isShapeQ(q)); },
   knowledgeQuestions() { return this.bank().filter(q => !this.isShapeQ(q)); },
+  // questions written in the official NCDMV test style ("I / II" statements, handbook statistics & tables)
+  isOfficialQ(q) { return q.id.indexOf('official-') === 0; },
+  officialQuestions() { return this.bank().filter(q => this.isOfficialQ(q)); },
 
   // Flat point grants (exam pass/perfect bonuses etc.)
   addPoints(n) {

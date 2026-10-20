@@ -8,6 +8,7 @@ const Exam = {
   SIGNS_PASS: 9,
   SIZE: 25,
   PASS: 20,
+  OFFICIAL: 10,        // up to 10 of the 25 in the official NCDMV style (its sample test is mostly "I / II")
   session: null,
   timerInt: null,
 
@@ -35,7 +36,9 @@ const Exam = {
 
   start() {
     const signs = shuffle(Store.shapeQuestions().slice()).slice(0, this.SIGNS_SIZE);
-    const know = shuffle(Store.knowledgeQuestions().slice()).slice(0, this.SIZE);
+    const official = shuffle(Store.officialQuestions().slice()).slice(0, this.OFFICIAL);
+    const others = shuffle(Store.knowledgeQuestions().filter(q => !Store.isOfficialQ(q))).slice(0, this.SIZE - official.length);
+    const know = shuffle(official.concat(others));
     const qs = signs.concat(know);
     this.session = { qs, nSigns: signs.length, idx: 0, answers: new Array(qs.length).fill(null), start: Date.now(), done: false };
     clearInterval(this.timerInt);

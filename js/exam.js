@@ -1,10 +1,10 @@
-// js/exam.js — Exam Simulation (R5.2): 50 questions, pass with 40+ (80%), visible timer,
+// js/exam.js — Exam Simulation (R5.2): 25 questions, pass with 20+ (80%), visible timer,
 // no feedback during the test, full results + wrong-answer review. Bilingual via I18N (R11.2/R11.3).
 // Loaded by index.html; used via the global Exam.
 
 const Exam = {
-  SIZE: 50,
-  PASS: 40,
+  SIZE: 25,
+  PASS: 20,
   session: null,
   timerInt: null,
 
@@ -18,8 +18,8 @@ const Exam = {
       '<h1>' + I18N.t('exam_title') + '</h1>' +
       '<p class="sub">' + I18N.t('exam_sub') + '</p>' +
       '<div class="exam-rules">' +
-      '<div class="rule"><b>50</b><span>' + I18N.t('rule_questions') + '</span></div>' +
-      '<div class="rule"><b>40+</b><span>' + I18N.t('rule_pass') + '</span></div>' +
+      '<div class="rule"><b>' + this.SIZE + '</b><span>' + I18N.t('rule_questions') + '</span></div>' +
+      '<div class="rule"><b>' + this.PASS + '+</b><span>' + I18N.t('rule_pass') + '</span></div>' +
       '<div class="rule"><b>×1.5</b><span>' + I18N.t('rule_points') + '</span></div>' +
       '<div class="rule"><b>+500</b><span>' + I18N.t('rule_bonus') + '</span></div>' +
       '</div>' +

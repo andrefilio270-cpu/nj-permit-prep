@@ -33,7 +33,7 @@ function esc(s) {
 }
 
 const Store = {
-  KEY: 'njpp_state_v1',
+  KEY: 'ncpp_state_v1',
   state: null,
 
   defaults() {

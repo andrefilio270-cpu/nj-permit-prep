@@ -17,9 +17,9 @@ const App = {
     Mascot.init();
     Chat.init();
 
-    // R9.4 — state selector: only New Jersey enabled
+    // R9.4 — state selector: only North Carolina enabled
     const sel = document.getElementById('state-select');
-    sel.addEventListener('change', () => { sel.value = 'New Jersey'; });
+    sel.addEventListener('change', () => { sel.value = 'North Carolina'; });
     sel.addEventListener('click', () => {
       if (!Tour.active) Mascot.say(I18N.t('only_nj'), 3000);
     });
@@ -56,8 +56,8 @@ const App = {
 
     const sel = document.getElementById('state-select');
     sel.innerHTML = this.STATES.map(s =>
-      '<option value="' + s + '"' + (s === 'New Jersey' ? ' selected' : ' disabled') + '>' +
-      s + (s === 'New Jersey' ? '' : I18N.t('soon')) + '</option>').join('');
+      '<option value="' + s + '"' + (s === 'North Carolina' ? ' selected' : ' disabled') + '>' +
+      s + (s === 'North Carolina' ? '' : I18N.t('soon')) + '</option>').join('');
 
     Chat.applyLang();
     if (Tour.active) Tour.show();
